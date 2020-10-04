@@ -13,6 +13,39 @@ x5=[11,12,13,14,15,5,4,3,2,1,16,17,18,19,20,10,9,8,7,6]
 x6=[1,12,3,14,5,15,4,13,2,11,6,17,8,19,20,10,9,18,7,16]
 x7 = [20,8,2,11,13,3,7,18,14,4,16,10,15,1,9,17,19,12,5,6] 
 
+
+--1)
+--1.1)
+selecao_foldr [] = []
+selecao_foldr xs = [x] ++ selecao_foldr (remove x xs)
+    where x = foldr1 min xs
+
+remove a [] = []
+remove a (x:xs)
+    |  a==x = xs
+    | otherwise = x:(remove a xs)
+
+minimo [] = undefined
+minimo [x] = x
+minimo (x:xs)
+    | x <= (minimo xs) = x
+    | otherwise = minimo xs
+
+--1.2)
+insere_ordenado x [] = [x]
+insere_ordenado x (y:ys)
+    | x <= y = (x:y:ys)
+    | otherwise = y: (insere_ordenado x ys)
+
+insercao [] = []
+insercao (x:xs) = insere_ordenado x (insercao xs)   
+
+insercao_foldr xs = foldr insere_ordenado [] xs
+
+--1.3)
+quick [] = []
+quick (x:xs) = (quick (filter (<x) xs)) ++ [x]  ++ (quick (filter (>x) xs))
+
 --2)
 --2.1)
 bubble_sort1 [] = []
@@ -117,6 +150,31 @@ trocacont3 ((x:y:zs),cont,n,True) =
 -- O algoritmo mais util seria o bubble_sortcon2 pois ele sempre ira organizar a lista não importa a organização da lista
 -- o bubble_sortcont1 sempre ira parar apos no maximo 2 loops na lista pois ira achar o ultimo numero da lista e ira terminar a execução
 -- o bubble_sortcont 3 apenas consegue organizar listas que estão de organizadas de maneira decrescente
+
+--3)
+--3.1)
+selecao_var_1 :: (Ord a) => [a] -> [a]
+selecao_var_1 [] = []
+selecao_var_1 xs = x:selecao_var_1(remove x xs)
+    where x = minimo xs
+
+--3.2)
+remove_menor a [] = []
+remove_menor a (x:xs)
+    | x == (minimo xs) && a == x = xs
+    | otherwise = x:(remove_menor a xs)
+
+-- remove a [] = []
+-- remove a (x:xs)
+--     |  a==x = xs
+--     | otherwise = x:(remove a xs)
+
+-- minimo [] = undefined
+-- minimo [x] = x
+-- minimo (x:xs)
+--     | x <= (minimo xs) = x
+--     | otherwise = minimo xs
+
 
 --4)
 quick_sort::(Ord a)=>[a]->[a]
@@ -240,9 +298,51 @@ ex2::Exp Int
 ex2 = Sub (Val 0) (Mul (Sub (Val 5) (Add (Val 8)(Add (Val 6) (Val 1)))) (Add(Val 2)(Pow (Val 6) (Val 2))))
 
 
+--7)
+type Hora = (String,Int,Int)
+
+--7.a)
+horasDecorridas :: Hora -> Int
+horasDecorridas (p,h,_) 
+    | p == "AM" = h
+    | otherwise = h + 12
+
+minutosDecorridos :: Hora -> Int
+minutosDecorridos (p,h,m)
+    | p == "AM" = m + (h*60)
+    | otherwise = m + (h*60) + (12*60)
+
+segundosDecorridos :: Hora -> Int
+segundosDecorridos (p,h,m)
+    | p == "AM" = (m*60) + (h*3600)
+    | otherwise = (m*60) + (h*3600) + (12*3600)
+
+--7.b)
+horasDecorridas_b :: Hora -> String
+horasDecorridas_b (p,h,m) 
+    | h < 0 || h > 11 = "Hora Invalida"
+    | m < 0 || m > 59 = "Minutos Invalidos"
+    | p == "AM" = show h
+    | otherwise = show (h + 12)
+
+minutosDecorridos_b :: Hora -> String
+minutosDecorridos_b (p,h,m)
+    | h < 0 || h > 11 = "Hora Invalida"
+    | m < 0 || m > 59 = "Minutos Invalidos"
+    | p == "AM" = show (m + (h*60))
+    | otherwise = show (m + (h*60) + (12*60))
+
+segundosDecorridos_b :: Hora -> String
+segundosDecorridos_b (p,h,m)
+    | h < 0 || h > 11 = "Hora Invalida"
+    | m < 0 || m > 59 = "Minutos Invalidos"
+    | p == "AM" = show ((m*60) + (h*3600))
+    | otherwise = show ((m*60) + (h*3600) + (12*3600))
+
+--7.c) Feito!
+
 --8)
 type Data = (Int,Int,Int)
-type Hora = (String,Int,Int)
 data Mensagem = Msg{ contato::String,  mensagem::String, datamsg::Data, hora::Hora, app::String}  deriving (Show,Eq, Ord) 
 
 
