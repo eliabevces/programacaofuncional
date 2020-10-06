@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 l1=[1..1000]
 l2=[1000,999..1]
 l3=l1++[0]
@@ -276,6 +277,30 @@ dividecont6 (x:xs) n elem =
 -- o algoritimo de dividecont é mais efcaz, pois ele não precisa achar a mediana dos primeiros elementos
 -- logo esse usa menos 6 comparaçoes
 
+--5)
+
+-- comeco  xs = let { n = length xs } in take (div n 2) xs
+-- final xs = let { n = length xs } in drop (div n 2) xs
+
+--5.a)
+merge :: Ord a => [a] -> [a] -> [a]
+merge xs [] = xs
+merge [] ys = ys
+merge (x:xs) (y:ys) | x <= y    = x:merge xs (y:ys)
+                    | otherwise = y:merge (x:xs) ys
+
+mergeSort :: Ord a => [a] -> [a]
+mergeSort [] = []
+mergeSort [a] = [a]
+mergeSort xs = merge (mergeSort (comeco xs)) (mergeSort (final xs))
+    where 
+        comeco xs = let { n = length xs } in take (div n 2) xs
+        final xs = let { n = length xs } in drop (div n 2) xs
+
+--5.b)
+
+
+
 --6)
 data Exp a =
     Val a -- um numero
@@ -463,6 +488,44 @@ mensagens_de_contato x = [ y | y<-teste, (contato y)==x]
 
 ultimas_msgs x = duas_ultimas_msgs(quick_sortdatahr(mensagens_de_contato x))
 
+--9)
+data ArvBinInt = Nulo | No Int ArvBinInt ArvBinInt deriving (Eq, Ord, Read,Show)
+
+emOrdem :: ArvBinInt -> [Int]
+emOrdem Nulo = []
+emOrdem (No x esq dir) = (emOrdem esq) ++ [x] ++ (emOrdem dir) 
+
+arvEx = (No 2 (No 7 (No 2 Nulo Nulo)
+                    (No 6 (No 5 Nulo Nulo)
+                          (No 11 Nulo Nulo)))
+              (No 5 Nulo 
+                    (No 9 (No 4 Nulo Nulo)
+                    Nulo)))
+
+--9.a)
+eh_folha :: ArvBinInt -> Bool
+eh_folha Nulo = False
+eh_folha (No x esq dir) 
+    | (esq == Nulo) && (dir == Nulo) = True
+    | otherwise = False
+
+lista_internos :: ArvBinInt -> [Int]
+lista_internos Nulo = []
+lista_internos (No x esq dir) 
+    | not (eh_folha (No x esq dir)) = [x] ++ lista_internos esq ++ lista_internos dir
+    | otherwise = []
+
+--9.b)
+soma_nos :: ArvBinInt -> Int
+soma_nos Nulo = 0
+soma_nos (No x esq dir) = x + (soma_nos esq) + (soma_nos dir)
+
+--9.c)
+pertence :: Int -> ArvBinInt -> Bool
+pertence _ Nulo = False
+pertence v (No x esq dir)
+    | v == x = True
+    | otherwise = (pertence v esq) || (pertence v dir)
 --10)
 
 data ArvBinEA a = Vazia | Folha a | NoEA (Char, ArvBinEA a, ArvBinEA a) deriving (Show) 
