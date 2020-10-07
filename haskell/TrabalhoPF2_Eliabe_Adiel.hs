@@ -160,9 +160,20 @@ selecao_var_1 xs = x:selecao_var_1(remove x xs)
     where x = minimo xs
 
 --3.2)
+
+selecao_var_2 :: (Ord a) => [a] -> [a]
+selecao_var_2 [] = []
+-- selecao_var_2 xs = x: selecao_var_2(remove_menor x xs)
+selecao_var_2 xs = [x | x <- xs, pertence_lista x (selecao_var_2(remove_menor x xs))]
+
+pertence_lista a [] = False
+pertence_lista a (x:xs)
+    | a == x = True
+    | otherwise = pertence_lista a xs
+
 remove_menor a [] = []
 remove_menor a (x:xs)
-    | x == (minimo xs) && a == x = xs
+    | x == (minimo (x:xs)) && a == x = xs
     | otherwise = x:(remove_menor a xs)
 
 -- remove a [] = []
@@ -298,7 +309,6 @@ mergeSort xs = merge (mergeSort (comeco xs)) (mergeSort (final xs))
         final xs = let { n = length xs } in drop (div n 2) xs
 
 --5.b)
-
 
 
 --6)
