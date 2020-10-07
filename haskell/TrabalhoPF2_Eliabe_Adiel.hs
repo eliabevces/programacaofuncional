@@ -1,4 +1,7 @@
 {-# LANGUAGE FlexibleContexts #-}
+-- Aluno: Adiel Pereira
+-- Aluno: Eliabe Vinicius
+
 l1=[1..1000]
 l2=[1000,999..1]
 l3=l1++[0]
